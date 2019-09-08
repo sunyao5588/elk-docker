@@ -132,6 +132,10 @@ else
   counter=0
   while [ -z "$CLUSTER_NAME" -a $counter -lt 30 ]; do
     sleep 1
+    teststr1=`curl http://localhost:9200/_cluster/health\?pretty`
+    testresult1=`echo $teststr1 | grep green`
+    if [ -z "$testresult1" ]; then
+      sleep 60
     ((counter++))
     CLUSTER_NAME=$(curl -k ${ELASTICSEARCH_URL}/_cat/health?h=cluster 2> /dev/null | tr -d '[:space:]')
     echo "Waiting for Elasticsearch cluster to respond ($counter/30)"
